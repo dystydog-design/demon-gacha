@@ -1,0 +1,1091 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Extreme Demon Gacha</title>
+
+
+
+
+
+<style>
+
+    #versionInfo {
+    position: fixed;
+    top: 10px;
+    right: 12px;
+    font-size: 12px;
+    color: #aaa;
+    background: #222;
+    padding: 7px 10px;
+    border-radius: 8px;
+    z-index: 9999;
+}
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #10111b;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background: #191a29;
+    padding: 22px;
+    text-align: center;
+    border-bottom: 2px solid #34354c;
+}
+
+header h1 {
+    margin: 0;
+    color: #b18aff;
+    font-size: 30px;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 18px;
+    background: #191a29;
+}
+
+nav button, .main-button {
+    background: #292a40;
+    border: 1px solid #555575;
+    color: white;
+    padding: 12px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+nav button:hover, .main-button:hover {
+    background: #7650bd;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+    padding: 25px;
+    text-align: center;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin: 25px 0;
+}
+
+.stat {
+    background: #1c1d2e;
+    padding: 20px;
+    border-radius: 10px;
+    min-width: 150px;
+}
+
+.stat h2 {
+    color: #b18aff;
+    margin: 5px;
+}
+
+.pack {
+    width: 220px;
+    height: 280px;
+    background: linear-gradient(145deg, #6338a9, #17152c);
+    border: 3px solid #a879ff;
+    border-radius: 18px;
+    margin: 35px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 65px;
+    box-shadow: 0 0 30px #7445c455;
+}
+
+.main-button {
+    background: #8656d6;
+    font-size: 17px;
+    padding: 16px 35px;
+    border: none;
+}
+
+.cards {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.card {
+    width: 175px;
+    min-height: 230px;
+    background: #202136;
+    border: 2px solid #555575;
+    border-radius: 12px;
+    padding: 15px 10px;
+    transition: 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card .rank {
+    font-size: 13px;
+    color: #aaa;
+}
+
+.card h3 {
+    font-size: 18px;
+    overflow-wrap: anywhere;
+}
+
+.card .rarity {
+    font-weight: bold;
+    margin-top: 15px;
+}
+
+.Common { border-color: #a1a1a1; }
+.Uncommon { border-color: #50c878; }
+.Rare { border-color: #399bff; }
+.Epic { border-color: #b35cff; }
+.Legendary { border-color: #ffb52e; }
+.Mythic { border-color: #ff5555; }
+.Apex { border-color: #ffdf62; }
+
+.Common .rarity { color: #aaa; }
+.Uncommon .rarity { color: #50c878; }
+.Rare .rarity { color: #399bff; }
+.Epic .rarity { color: #b35cff; }
+.Legendary .rarity { color: #ffb52e; }
+.Mythic .rarity { color: #ff5555; }
+.Apex .rarity { color: #ffdf62; }
+
+.holo {
+    background: linear-gradient(135deg, #24213d, #563e69, #263e5d);
+    box-shadow: 0 0 15px #b18aff77;
+}
+
+.search {
+    padding: 13px;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 8px;
+    border: 1px solid #555575;
+    background: #202136;
+    color: white;
+    margin: 15px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+    background: #1c1d2e;
+}
+
+td, th {
+    padding: 15px;
+    border-bottom: 1px solid #393950;
+}
+
+th {
+    color: #b18aff;
+}
+
+#results {
+    min-height: 100px;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    color: #777;
+}
+
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    color: #aaa;
+}
+
+.spinner {
+    width: 35px;
+    height: 35px;
+    border: 4px solid #444;
+    border-top: 4px solid #a855f7;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 12px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.reset-button {
+    margin-top: 20px;
+    background: #dc2626;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.reset-button:hover {
+    background: #b91c1c;
+}
+
+
+/* ===== NEON GLOW THEME ===== */
+:root {
+    --bg: #080611;
+    --panel: rgba(25, 18, 48, 0.88);
+    --purple: #a855f7;
+    --cyan: #22d3ee;
+    --pink: #ec4899;
+    --soft-glow: 0 0 12px rgba(168, 85, 247, 0.35),
+                 0 0 28px rgba(168, 85, 247, 0.16);
+}
+
+body {
+    background:
+        radial-gradient(ellipse at 15% 5%, rgba(110, 40, 190, 0.24), transparent 38%),
+        radial-gradient(ellipse at 85% 30%, rgba(20, 130, 190, 0.15), transparent 35%),
+        linear-gradient(145deg, #080611, #100b20 55%, #080611);
+    background-attachment: fixed;
+    color: #f7f1ff;
+}
+
+header {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(110deg, rgba(35, 15, 67, 0.98), rgba(12, 23, 49, 0.98));
+    border-bottom: 1px solid rgba(168, 85, 247, 0.75);
+    box-shadow: 0 5px 30px rgba(124, 58, 237, 0.22);
+}
+
+header::after {
+    content: "";
+    position: absolute;
+    left: 15%;
+    right: 15%;
+    bottom: -2px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #a855f7, #22d3ee, transparent);
+    box-shadow: 0 0 16px #a855f7;
+}
+
+header h1 {
+    color: #e9d5ff;
+    text-shadow: 0 0 8px #a855f7, 0 0 22px rgba(168, 85, 247, 0.8);
+    letter-spacing: 2px;
+}
+
+header p {
+    color: #c4b5fd;
+}
+
+nav {
+    background: rgba(12, 9, 25, 0.92);
+    border-bottom: 1px solid rgba(139, 92, 246, 0.22);
+    backdrop-filter: blur(12px);
+}
+
+nav button, .main-button {
+    background: linear-gradient(135deg, #302052, #17263f);
+    border: 1px solid rgba(192, 132, 252, 0.65);
+    color: #f5eaff;
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.18);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+nav button:hover, .main-button:hover {
+    background: linear-gradient(135deg, #783bd0, #176b91);
+    transform: translateY(-2px);
+    box-shadow: 0 0 12px rgba(168, 85, 247, 0.75),
+                0 0 26px rgba(34, 211, 238, 0.25);
+}
+
+.container {
+    max-width: 1180px;
+}
+
+.page h2 {
+    color: #e9d5ff;
+    text-shadow: 0 0 12px rgba(168, 85, 247, 0.55);
+}
+
+.stats {
+    gap: 18px;
+}
+
+.stat {
+    background: linear-gradient(145deg, rgba(35, 25, 62, 0.95), rgba(15, 22, 43, 0.95));
+    border: 1px solid rgba(167, 139, 250, 0.35);
+    border-radius: 14px;
+    box-shadow: var(--soft-glow);
+    min-width: 165px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0 18px rgba(168, 85, 247, 0.48);
+}
+
+.stat h2 {
+    color: #67e8f9;
+    text-shadow: 0 0 10px rgba(34, 211, 238, 0.65);
+}
+
+.pack {
+    background:
+        radial-gradient(circle at 50% 25%, rgba(216, 180, 254, 0.35), transparent 38%),
+        linear-gradient(145deg, #7136b8, #211044 60%, #102b48);
+    border: 2px solid #c084fc;
+    box-shadow: 0 0 12px #a855f7, 0 0 35px rgba(168, 85, 247, 0.65),
+                inset 0 0 25px rgba(255, 255, 255, 0.08);
+    animation: packPulse 3s ease-in-out infinite;
+}
+
+@keyframes packPulse {
+    0%, 100% { box-shadow: 0 0 12px #a855f7, 0 0 30px rgba(168, 85, 247, 0.45); }
+    50% { box-shadow: 0 0 20px #c084fc, 0 0 48px rgba(34, 211, 238, 0.28); }
+}
+
+.main-button {
+    background: linear-gradient(100deg, #9333ea, #6d28d9 48%, #0891b2);
+    border: 1px solid #d8b4fe;
+    border-radius: 12px;
+    box-shadow: 0 0 14px rgba(168, 85, 247, 0.55);
+    letter-spacing: 1px;
+}
+
+.cards {
+    gap: 18px;
+}
+
+.card {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(150deg, rgba(37, 28, 62, 0.98), rgba(13, 24, 43, 0.98));
+    border-radius: 14px;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.3);
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(125deg, rgba(255,255,255,0.09), transparent 38%);
+}
+
+.card:hover {
+    transform: translateY(-7px) scale(1.025);
+    box-shadow: 0 0 18px rgba(168, 85, 247, 0.3);
+}
+
+.card h3, .card p {
+    position: relative;
+}
+
+.Common { border-color: #a1a1a1; box-shadow: 0 0 9px rgba(161,161,161,0.2); }
+.Uncommon { border-color: #50c878; box-shadow: 0 0 11px rgba(80,200,120,0.28); }
+.Rare { border-color: #399bff; box-shadow: 0 0 12px rgba(57,155,255,0.35); }
+.Epic { border-color: #b35cff; box-shadow: 0 0 14px rgba(179,92,255,0.4); }
+.Legendary { border-color: #ffb52e; box-shadow: 0 0 16px rgba(255,181,46,0.4); }
+.Mythic { border-color: #ff5555; box-shadow: 0 0 17px rgba(255,85,85,0.42); }
+.Apex { border-color: #ffdf62; box-shadow: 0 0 20px rgba(255,223,98,0.55); }
+
+.holo {
+    background: linear-gradient(125deg, rgba(74, 34, 112, 0.98), rgba(24, 70, 99, 0.98), rgba(91, 37, 91, 0.98));
+    box-shadow: 0 0 18px rgba(216, 180, 254, 0.7),
+                inset 0 0 22px rgba(255, 255, 255, 0.1);
+}
+
+.search {
+    background: rgba(22, 17, 42, 0.95);
+    border: 1px solid rgba(167, 139, 250, 0.55);
+    color: #fff;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.25);
+    outline: none;
+}
+
+.search:focus {
+    border-color: #67e8f9;
+    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.12),
+                0 0 16px rgba(34, 211, 238, 0.25);
+}
+
+table {
+    overflow: hidden;
+    border: 1px solid rgba(167, 139, 250, 0.35);
+    border-radius: 12px;
+    box-shadow: var(--soft-glow);
+}
+
+td, th {
+    border-bottom: 1px solid rgba(167, 139, 250, 0.18);
+}
+
+th {
+    color: #67e8f9;
+    text-shadow: 0 0 8px rgba(34, 211, 238, 0.5);
+    background: rgba(80, 45, 130, 0.28);
+}
+
+.reset-button {
+    margin-top: 38px;
+    background: linear-gradient(135deg, #7f1d5a, #991b1b);
+    border: 1px solid rgba(251, 113, 133, 0.65);
+    box-shadow: 0 0 12px rgba(244, 63, 94, 0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reset-button:hover {
+    background: linear-gradient(135deg, #be185d, #dc2626);
+    transform: translateY(-2px);
+    box-shadow: 0 0 16px rgba(244, 63, 94, 0.55);
+}
+
+#versionInfo {
+    color: #e9d5ff;
+    background: rgba(20, 12, 38, 0.92);
+    border: 1px solid rgba(192, 132, 252, 0.55);
+    box-shadow: 0 0 12px rgba(168, 85, 247, 0.35);
+    backdrop-filter: blur(10px);
+}
+
+footer {
+    color: #9385ad;
+}
+
+@media (max-width: 600px) {
+    header h1 { font-size: 23px; }
+    .container { padding: 18px 12px; }
+    .pack { width: 190px; height: 245px; }
+    .stat { min-width: 135px; padding: 15px 10px; }
+    #versionInfo { top: 6px; right: 6px; font-size: 10px; }
+}
+
+/* Booster pack design */
+.pack {
+    position: relative;
+    width: 200px;
+    height: 300px;
+    padding: 22px 14px;
+    box-sizing: border-box;
+    overflow: hidden;
+
+    background:
+        radial-gradient(circle at 50% 40%, #c77aff66, transparent 55%),
+        linear-gradient(160deg, #542080, #a044b9, #ed9b9b);
+
+    border: 2px solid #a77aab;
+    border-radius: 0;
+
+    box-shadow:
+        0 0 12px #a94cff66,
+        inset 0 0 20px #ffffff22;
+}
+
+/* Crimped top and bottom edges */
+.pack::before,
+.pack::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 12px;
+
+    background: repeating-linear-gradient(
+        90deg,
+        #d6a6df,
+        #6b397e 5px,
+        #e5b9e9 10px
+    );
+
+    z-index: 2;
+}
+
+.pack::before {
+    top: 0;
+
+    clip-path: polygon(
+        0 100%, 2.5% 0, 5% 100%, 7.5% 0,
+        10% 100%, 12.5% 0, 15% 100%, 17.5% 0,
+        20% 100%, 22.5% 0, 25% 100%, 27.5% 0,
+        30% 100%, 32.5% 0, 35% 100%, 37.5% 0,
+        40% 100%, 42.5% 0, 45% 100%, 47.5% 0,
+        50% 100%, 52.5% 0, 55% 100%, 57.5% 0,
+        60% 100%, 62.5% 0, 65% 100%, 67.5% 0,
+        70% 100%, 72.5% 0, 75% 100%, 77.5% 0,
+        80% 100%, 82.5% 0, 85% 100%, 87.5% 0,
+        90% 100%, 92.5% 0, 95% 100%, 97.5% 0,
+        100% 100%
+    );
+}
+
+.pack::after {
+    bottom: 0;
+    transform: rotate(180deg);
+
+    clip-path: polygon(
+        0 100%, 2.5% 0, 5% 100%, 7.5% 0,
+        10% 100%, 12.5% 0, 15% 100%, 17.5% 0,
+        20% 100%, 22.5% 0, 25% 100%, 27.5% 0,
+        30% 100%, 32.5% 0, 35% 100%, 37.5% 0,
+        40% 100%, 42.5% 0, 45% 100%, 47.5% 0,
+        50% 100%, 52.5% 0, 55% 100%, 57.5% 0,
+        60% 100%, 62.5% 0, 65% 100%, 67.5% 0,
+        70% 100%, 72.5% 0, 75% 100%, 77.5% 0,
+        80% 100%, 82.5% 0, 85% 100%, 87.5% 0,
+        90% 100%, 92.5% 0, 95% 100%, 97.5% 0,
+        100% 100%
+    );
+}
+
+/* Inner gold border */
+.pack-inner {
+    position: absolute;
+    left: 15px;
+    right: 15px;
+    top: 65px;
+    height: 195px;
+
+    box-sizing: border-box;
+    border: 2px solid #d8b46c;
+    border-radius: 10px;
+
+    box-shadow: inset 0 0 15px #ffffff22;
+}
+
+/* Tear here text */
+.pack-topline {
+    position: absolute;
+    top: 12px;
+    left: 14px;
+
+    font-size: 7px;
+    letter-spacing: 2px;
+    color: #f5d5ff;
+}
+
+/* Demon icon */
+.pack-symbol {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 75px;
+    height: 75px;
+    margin: 0;
+}
+
+.pack-symbol img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+
+    filter: drop-shadow(0 0 12px #ff3333);
+}
+
+/* Extreme Demon text */
+.pack-name {
+    position: absolute;
+    top: 95px;
+    left: 0;
+    width: 100%;
+
+    text-align: center;
+    font-size: 21px;
+    line-height: 1.05;
+    font-weight: 1000;
+    color: white;
+
+    text-shadow: 2px 3px 3px #411044;
+    margin: 0;
+}
+
+/* 5 Cards ribbon */
+.pack-bottomline {
+    position: absolute;
+    top: 155px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    margin: 0;
+    padding: 7px 22px;
+
+    background: linear-gradient(
+        90deg,
+        #d6a34b,
+        #ffe49b,
+        #d6a34b
+    );
+
+    color: #4c203b;
+    font-size: 11px;
+    font-weight: 1000;
+    letter-spacing: 3px;
+
+    white-space: nowrap;
+
+    clip-path: polygon(
+        8% 0,
+        92% 0,
+        100% 50%,
+        92% 100%,
+        8% 100%,
+        0 50%
+    );
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>EXTREME DEMON GACHA</h1>
+    <p>Collect the hardest Geometry Dash levels!</p>
+</header>
+
+<nav>
+    <button onclick="showPage('home')">Home</button>
+    <button onclick="showPage('collection')">Collection</button>
+    <button onclick="showPage('index')">Level Index</button>
+    <button onclick="showPage('rates')">Drop Rates</button>
+</nav>
+
+<div class="container">
+
+<!-- HOME -->
+<section id="home" class="page active">
+
+    <h2>Pack Opening</h2>
+    <p>Open packs and discover new Extreme Demons!</p>
+
+    <div class="stats">
+        <div class="stat">
+            <p>Packs remaining</p>
+            <h2 id="packs">3</h2>
+        </div>
+
+        <div class="stat">
+            <p>Unique cards</p>
+            <h2 id="unique">0</h2>
+        </div>
+
+        <div class="stat">
+            <p>Total cards</p>
+            <h2 id="total">0</h2>
+        </div>
+    </div>
+
+    
+    <div class="pack">
+    <div class="pack-topline">TEAR HERE</div>
+
+    <div class="pack-inner">
+        <div class="pack-symbol">
+            <img src="Extreme_Demon_Icon.webp" alt="Extreme Demon">
+        </div>
+
+        <div class="pack-name">
+            EXTREME<br>DEMON
+        </div>
+
+        <div class="pack-bottomline">
+            5 CARDS
+        </div>
+    </div>
+</div>
+
+
+    <button class="main-button" onclick="openPack()">
+        OPEN PACK
+    </button>
+
+    <h2>Pack Results</h2>
+    <div id="results" class="cards"></div>
+    <button onclick="resetAccount()" class="reset-button">
+        Reset Account
+    </button>
+
+</section>
+
+<!-- COLLECTION -->
+<section id="collection" class="page">
+
+    <h2>My Collection</h2>
+    <p>All the demons you've discovered.</p>
+
+    <div class="stats">
+        <div class="stat">
+            <p>Unique demons</p>
+            <h2 id="collectionUnique">0</h2>
+        </div>
+        <div class="stat">
+            <p>Holographics</p>
+            <h2 id="holos">0</h2>
+        </div>
+    </div>
+
+    <input class="search" id="collectionSearch"
+        placeholder="Search your collection..."
+        oninput="renderCollection()">
+
+    <div id="collectionCards" class="cards"></div>
+
+</section>
+
+<!-- INDEX -->
+<section id="index" class="page">
+
+    <h2>Level Index</h2>
+    <p>Explore all available cards.</p>
+
+    <input class="search" id="indexSearch"
+        placeholder="Search demons..."
+        oninput="renderIndex()">
+
+    <div id="indexCards" class="cards"></div>
+
+</section>
+
+<!-- DROP RATES -->
+<section id="rates" class="page">
+
+    <h2>Drop Rates</h2>
+
+    <table>
+        <tr>
+            <th>Rarity</th>
+            <th>Chance</th>
+        </tr>
+        <tr><td>Common</td><td>70%</td></tr>
+        <tr><td>Uncommon</td><td>20%</td></tr>
+        <tr><td>Rare</td><td>7%</td></tr>
+        <tr><td>Epic</td><td>2.5%</td></tr>
+        <tr><td>Legendary</td><td>0.45%</td></tr>
+        <tr><td>Mythic</td><td>0.045%</td></tr>
+        <tr><td>Apex</td><td>0.005%</td></tr>
+    </table>
+
+    <p>Each card has an independent 10% chance of being holographic.</p>
+
+</section>
+
+</div>
+
+<footer>
+    Unofficial Geometry Dash fan project.
+    Not affiliated with RobTop Games or AREDL.
+</footer>
+
+<script>
+
+// DEMON DATABASE
+
+// DEMON DATABASE
+
+
+
+
+
+
+const versionNumber = "v0.10.0 | "
+
+
+
+
+
+
+
+
+let demons = [];
+
+async function loadDemons() {
+    const index = document.getElementById("indexCards");
+
+    index.innerHTML = `
+        <div class="loading">
+            <div class="spinner"></div>
+            <p>Loading AREDL levels...</p>
+        </div>
+    `;
+
+    try {
+        const response = await fetch(
+            "/api/demons"
+        );
+
+        if (!response.ok) {
+            throw new Error("AREDL API error: " + response.status);
+        }
+
+        const data = await response.json();
+
+        demons = data.map(level => ({
+            name: level.name,
+            rank: level.position
+        }));
+
+        demons.sort((a, b) => a.rank - b.rank);
+
+        renderIndex();
+
+        console.log("Loaded " + demons.length + " AREDL levels!");
+
+        document.getElementById("versionInfo").textContent =
+            versionNumber + demons.length + " AREDL levels";
+
+    } catch (error) {
+        index.innerHTML =
+            "<p>Couldn't load AREDL. Check the console for errors.</p>";
+
+        console.error(error);
+    }
+}
+
+
+// RARITY SYSTEM
+
+function getRarity(rank) {
+
+    if (rank === 1) return "Apex";
+    if (rank <= 10) return "Mythic";
+    if (rank <= 35) return "Legendary";
+    if (rank <= 100) return "Epic";
+    if (rank <= 260) return "Rare";
+    if (rank <= 640) return "Uncommon";
+
+    return "Common";
+}
+
+const weights = [
+    {rarity:"Common", chance:70},
+    {rarity:"Uncommon", chance:20},
+    {rarity:"Rare", chance:7},
+    {rarity:"Epic", chance:2.5},
+    {rarity:"Legendary", chance:0.45},
+    {rarity:"Mythic", chance:0.045},
+    {rarity:"Apex", chance:0.005}
+];
+
+function randomRarity() {
+
+    let random = Math.random() * 100;
+
+    for (const tier of weights) {
+        random -= tier.chance;
+
+        if (random < 0) {
+            return tier.rarity;
+        }
+    }
+
+    return "Common";
+}
+
+// SAVING
+
+let save = JSON.parse(localStorage.getItem("demonSave")) || {
+    packs: 3,
+    cards: []
+};
+
+function saveGame() {
+    localStorage.setItem("demonSave", JSON.stringify(save));
+}
+function resetAccount() {
+    if (!confirm("Are you sure you want to reset your account? This cannot be undone!")) {
+        return;
+    }
+
+    localStorage.removeItem("demonSave");
+
+    location.reload();
+}
+
+// PACK OPENING
+
+function openPack() {
+    if (save.packs <= -100) {
+        alert("You have no packs remaining!");
+        return;
+    }
+
+    save.packs--;
+
+    if (demons.length === 0) {
+        alert("Levels haven't loaded yet!");
+        return;
+    }
+
+    let results = [];
+
+    for (let i = 0; i < 5; i++) {
+
+        let rarity = randomRarity();
+
+        let pool = demons.filter(d =>
+            getRarity(d.rank) === rarity
+        );
+
+        if (pool.length === 0) {
+            pool = demons;
+        }
+
+        let demon = pool[
+            Math.floor(Math.random() * pool.length)
+        ];
+
+        let card = {
+            name: demon.name,
+            rank: demon.rank,
+            rarity: getRarity(demon.rank),
+            holo: Math.random() < 0.10
+        };
+
+        save.cards.push(card);
+        results.push(card);
+    }
+
+    displayResults(results);
+    saveGame();
+    updateStats();
+}
+
+// DISPLAY CARDS
+
+function createCard(card) {
+
+    return `
+        <div class="card ${card.rarity} ${card.holo ? "holo" : ""}">
+            <p class="rank">#${card.rank}</p>
+            <h3>${card.name}</h3>
+            <p class="rarity">${card.rarity.toUpperCase()}</p>
+            <p>${card.holo ? "✨ HOLOGRAPHIC" : "Normal"}</p>
+        </div>
+    `;
+}
+
+function displayResults(cards) {
+
+    document.getElementById("results").innerHTML =
+        cards.map(createCard).join("");
+}
+
+// COLLECTION
+
+function renderCollection() {
+
+    let search = document.getElementById(
+        "collectionSearch"
+    ).value.toLowerCase();
+
+    let filtered = save.cards.filter(card =>
+        card.name.toLowerCase().includes(search)
+    );
+
+    document.getElementById("collectionCards").innerHTML =
+        filtered.map(createCard).join("");
+}
+
+// INDEX
+
+function renderIndex() {
+
+    let search = document.getElementById(
+        "indexSearch"
+    ).value.toLowerCase();
+
+    let filtered = demons.filter(d =>
+        d.name.toLowerCase().includes(search)
+    );
+
+    document.getElementById("indexCards").innerHTML =
+        filtered.map(d => createCard({
+            name:d.name,
+            rank:d.rank,
+            rarity:getRarity(d.rank),
+            holo:false
+        })).join("");
+}
+
+// STATS
+
+function updateStats() {
+
+    let unique = new Set(
+        save.cards.map(c => c.name)
+    ).size;
+
+    let holos = save.cards.filter(c => c.holo).length;
+
+    document.getElementById("packs").textContent = save.packs;
+    document.getElementById("unique").textContent = unique;
+    document.getElementById("total").textContent = save.cards.length;
+
+    document.getElementById("collectionUnique").textContent = unique;
+    document.getElementById("holos").textContent = holos;
+}
+
+// NAVIGATION
+
+function showPage(page) {
+
+    document.querySelectorAll(".page").forEach(p =>
+        p.classList.remove("active")
+    );
+
+    document.getElementById(page).classList.add("active");
+
+    if (page === "collection") renderCollection();
+    if (page === "index") renderIndex();
+}
+
+// START
+
+updateStats();
+loadDemons();
+
+console.log("JavaScript is running");
+console.log("Number of demons:", demons.length);
+</script>
+<div id="versionInfo">v0.10.0 | Loading data...</div>
+</div>
+</body>
+</html>
+
