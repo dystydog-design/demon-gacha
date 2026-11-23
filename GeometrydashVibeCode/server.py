@@ -32,6 +32,11 @@ class Handler(SimpleHTTPRequestHandler):
         else:
             super().do_GET()
 
-server = HTTPServer(("localhost", 8000), Handler)
-print("Server running at http://localhost:8000")
+import os
+
+port = int(os.environ.get("PORT", 8000))
+
+server = HTTPServer(("0.0.0.0", port), Handler)
+print("Server running on port", port)
 server.serve_forever()
+
